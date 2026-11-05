@@ -1,9 +1,10 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 import {
   FiMail,
@@ -25,9 +26,17 @@ import {
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/firebase";
 
+const dashboards = {
+  admin: "/admin",
+  hr: "/hr",
+  employee: "/employee",
+};
 
 export default function LoginForm() {
   const router = useRouter();
+  const status = useSelector((state) => state.auth.status);
+  const user = useSelector((state) => state.auth.user);
+  const redirected = useRef(false);
 
   const [form, setForm] = useState({
     email: "",
@@ -38,6 +47,17 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+
+    const target = dashboards[user?.role];
+    if (!target) return;
+
+    if (redirected.current) return;
+    redirected.current = true;
+    router.replace(target);
+  }, [status, user, router]);
 
   function update(e) {
     const { name, value, checked, type } = e.target;
@@ -95,20 +115,12 @@ export default function LoginForm() {
 
       const role = userData.role;
 
-      const dashboards = {
-        admin: "/admin",
-        hr: "/hr",
-        employee: "/employee",
-      };
-
       if (!dashboards[role]) {
         await signOut(auth);
         throw new Error(
           "Your account has an invalid role. Contact the administrator."
         );
       }
-
-      router.replace(dashboards[role]);
     } catch (err) {
       console.error("Login error:", err);
 
