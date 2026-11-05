@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -96,7 +95,7 @@ export default function LoginForm() {
       const credential = await signInWithEmailAndPassword(
         auth,
         email,
-        form.password
+        form.password,
       );
 
       const firebaseUser = credential.user;
@@ -107,7 +106,7 @@ export default function LoginForm() {
       if (!userSnapshot.exists()) {
         await signOut(auth);
         throw new Error(
-          "Your account profile was not found. Contact the administrator."
+          "Your account profile was not found. Contact the administrator.",
         );
       }
 
@@ -118,7 +117,7 @@ export default function LoginForm() {
       if (!dashboards[role]) {
         await signOut(auth);
         throw new Error(
-          "Your account has an invalid role. Contact the administrator."
+          "Your account has an invalid role. Contact the administrator.",
         );
       }
     } catch (err) {
@@ -130,20 +129,18 @@ export default function LoginForm() {
         "auth/wrong-password": "Incorrect email or password.",
         "auth/invalid-email": "Enter a valid email address.",
         "auth/user-disabled": "This account has been disabled.",
-        "auth/too-many-requests":
-          "Too many attempts. Please try again later.",
+        "auth/too-many-requests": "Too many attempts. Please try again later.",
         "auth/network-request-failed":
           "Network error. Check your internet connection.",
         "permission-denied":
           "Unable to access your profile. Check your account permissions.",
-        "unavailable":
-          "Database temporarily unavailable. Try again.",
+        unavailable: "Database temporarily unavailable. Try again.",
       };
 
       setError(
         errorMessages[err.code] ||
           err.message ||
-          "Something went wrong. Please try again."
+          "Something went wrong. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -163,9 +160,7 @@ export default function LoginForm() {
       <div className="relative mx-auto my-auto w-full max-w-md">
         <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
           <Image src="/images/logo.png" alt="HCM Lite" width={40} height={40} />
-          <span className="text-xl font-semibold text-[#0a1f5c]">
-            HCM Lite
-          </span>
+          <span className="text-xl font-semibold text-[#0a1f5c]">HCM Lite</span>
         </div>
 
         <header className="text-center">
@@ -178,11 +173,7 @@ export default function LoginForm() {
           </p>
         </header>
 
-        <form
-          onSubmit={handleSubmit}
-          noValidate
-          className="mt-10 space-y-5"
-        >
+        <form onSubmit={handleSubmit} noValidate className="mt-10 space-y-5">
           <div className="relative">
             <label htmlFor="email" className="sr-only">
               Email address
@@ -234,11 +225,7 @@ export default function LoginForm() {
               aria-label={showPassword ? "Hide password" : "Show password"}
               className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-500 transition hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
-              {showPassword ? (
-                <FiEyeOff size={20} />
-              ) : (
-                <FiEye size={20} />
-              )}
+              {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
             </button>
           </div>
 
